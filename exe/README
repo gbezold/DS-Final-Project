@@ -1,0 +1,1 @@
+Make sure the .txt files are in this folder (if you just run make w/o specifying a target, it deletes them) before running with them as command line arguments!
