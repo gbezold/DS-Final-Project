@@ -149,14 +149,32 @@ int main(const int argc, const char *argv [] ){
 	 }
 
 	 //7: Print the graph after adding the edges
+	 COUT << "With edges added: " << ENDL;
 	 bars_graph.print_graph();
 
 
 	 //8. TEST: add bar
-	 Bar new_bar;
-	 add_bar(bars_graph, new_bar);
+	 //Bar new_bar;
+	 //add_bar(bars_graph, new_bar);
+	 //COUT << "New bar added, printing updated graph...." << ENDL;
+	 //bars_graph.print_graph();
 
+	 //9. TEST: prune by price tier
+	 //COUT << "Pruning all bars above price tier 2...." << ENDL;
+	 //unsigned int max_price_tier = 2;
+	 //prune_by_price(bars_graph, max_price_tier);
+	 //COUT << "Updated graph: " << ENDL;
+	 //bars_graph.print_graph();
+
+
+	 //10. TEST: prune by rating
+	 COUT << "Pruning all bars below rating 4..." << ENDL;
+	 unsigned int min_rating = 4;
+	 prune_by_rating(bars_graph, min_rating);
+
+	 COUT << "Updated graph: " << ENDL;
 	 bars_graph.print_graph();
+
 
 
 

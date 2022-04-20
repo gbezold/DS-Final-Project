@@ -80,6 +80,42 @@ void add_bar(Graph<Bar>& bar_graph, Bar& new_bar){
 
 
 
+//prune_by_price function prunes the tree to only bars above or below a certain price tier
+void prune_by_price(Graph<Bar>& bar_graph, unsigned int& price_tier){
+
+	 unsigned int i;
+	 unsigned int num_vertex = (unsigned int) bar_graph.num_vertices();
+
+
+	 //Cycle through all the vertices
+	 for (i=0; i < num_vertex; i++){
+
+		  //If the current vertex (Bar node) has a price tier greater than the one specified, remove it
+		  if((bar_graph.get_vertex_value(i)).price_tier > price_tier){
+				bar_graph.remove_vertex(i);
+		  }
+	 }
+}
+
+
+void prune_by_rating(Graph<Bar>& bar_graph, unsigned int& rating){
+
+	 unsigned int i;
+	 unsigned int num_vertex = (unsigned int) bar_graph.num_vertices();
+
+	 //Cycle through all the vertices
+	 for(i=0; i < num_vertex; i++){
+
+		  //If the current vertex (Bar node) had a rating less than the one specified, remove it
+		  if((bar_graph.get_vertex_value(i)).rating < rating){
+				bar_graph.remove_vertex(i);
+		  }
+	 }
+}
+
+
+
+
 
 
 

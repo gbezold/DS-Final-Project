@@ -8,6 +8,7 @@
 #include <vector>
 #include <queue>
 #include <unordered_map>
+#include <string.h>
 
 #define VECTOR std::vector
 #define STACK std::stack
@@ -116,6 +117,12 @@ struct Graph{
 
 	   }
 
+		//NEW METHOD
+		//Return number of vertices
+		long unsigned int num_vertices(){
+			 return vertices.size();
+	   }
+
 
 		
 		// Add Edge from Origin to Destination, with weight
@@ -142,16 +149,25 @@ struct Graph{
 		unsigned int locate_data( T& data ){
 
 			 unsigned int i;
+			 const char* data_name = (data.name).c_str();
+
 
 			 for (i = 0; i < this->vertices.size(); i++){
 
-				 if(data == this->get_vertex_value(i)) return i;
+				  //Convert current name to const char*
+				  const char* curr_name = (this->get_vertex_value(i).name).c_str();
+
+				 if(strcmp(data_name, curr_name) == 0) return i;
 
 		    }
 
 			 return 100;
 
 	   }
+
+
+
+
 
 		//NEW METHOD:
 		//Checks if a particular data value is in the graph
