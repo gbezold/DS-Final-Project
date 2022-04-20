@@ -37,8 +37,6 @@ struct Bar{
 		  std::string name;
 		  unsigned int rating;
 		  unsigned int price_tier;
-
-	 public:
 		  //Default constructor
 		  Bar() : name(), rating(0), price_tier(0) {}
 
@@ -46,6 +44,7 @@ struct Bar{
 		  Bar(const std::string& name_in, const unsigned int& rating_in, const unsigned int& price_tier_in):
 				name(name_in), rating(rating_in), price_tier(price_tier_in) {}
 
+		  //Method to print a bar's info
 		  void print_Bar(){
 				COUT << "---------------------------------" << ENDL;
 				COUT << "Name: " << this->name << ENDL;
@@ -61,4 +60,8 @@ struct Bar{
 
 //Typedef so that we can just reference Bar
 typedef struct Bar Bar;
+
+
+//Function declarations:
+void add_bar(Graph<Bar>& bar_graph, Bar& new_bar);
 

@@ -152,6 +152,13 @@ int main(const int argc, const char *argv [] ){
 	 bars_graph.print_graph();
 
 
+	 //8. TEST: add bar
+	 Bar new_bar;
+	 add_bar(bars_graph, new_bar);
+
+	 bars_graph.print_graph();
+
+
 
 
 
