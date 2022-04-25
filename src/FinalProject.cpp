@@ -116,37 +116,47 @@ int main(const int argc, const char *argv [] ){
 
 
 	 //6. ADD EDGES:
-	 std::string curr_edges;
+	 std::string curr_edge;
 	 unsigned int i, j;
-	 unsigned int destin, weight;
+	 //unsigned int destin, weight;
 
-	 //6.1 : Read in the strings of edges 
-	 while (edges_input >> curr_edges){
-
-		  edges.push_back(curr_edges);
-
+	 //6.1 : Read in the strings of edges
+	 while(std::getline(edges_input, curr_edge)){
+		  edges.push_back(curr_edge);
 	 }
 
 
-	 //Insert each edge (format: j = destin, j+1 = weight)
-	 
-	 //Iterate through the list of edges for each vertex
-	 for (i=0; i < edges.size(); i++){
+	 //6.2 : Parse the individual weights
 
-		  for(j=0; j < edges[i].size(); j+=2){
+	 //Iterate through the list of vertices
+	 for(i=0; i < edges.size(); i++){
 
-				//Get the destination
-				destin = edges[i][j] - '0';
+		  VECTOR<unsigned int> destins;
+		  VECTOR<unsigned int> weights;
+		  
+		  std::stringstream list(edges[i]);
+		  int iter=0;
 
-				//Get the weight
-				weight = edges[i][j+1] - '0';
+		  //PARSE EACH LINE OF INPUT FOR THE WEIGHTS AND DESTINATIONS
+		  while(std::getline(list, curr_edge, ',')){
 
+				if ((iter%2 == 0)) destins.push_back((unsigned int) std::stoi(curr_edge));
 
-				//Add edge from origin to destin of weight weight
-				bars_graph.add_edge(i, destin, weight);
+				else weights.push_back((unsigned int) std::stoi(curr_edge));
+
+				iter++;
 
 		  }
+
+
+		  //INSERT THE EDGES
+		  for(j=0; j < destins.size(); j++){
+
+				bars_graph.add_edge(i, destins[j], weights[j]);
+		  }
 	 }
+
+
 
 	 //7: Print the graph after adding the edges
 	 COUT << "With edges added: " << ENDL;
@@ -168,12 +178,12 @@ int main(const int argc, const char *argv [] ){
 
 
 	 //10. TEST: prune by rating
-	 COUT << "Pruning all bars below rating 4..." << ENDL;
-	 unsigned int min_rating = 4;
-	 prune_by_rating(bars_graph, min_rating);
+	 //COUT << "Pruning all bars below rating 4..." << ENDL;
+	 //unsigned int min_rating = 4;
+	 //prune_by_rating(bars_graph, min_rating);
 
-	 COUT << "Updated graph: " << ENDL;
-	 bars_graph.print_graph();
+	 //COUT << "Updated graph: " << ENDL;
+	 //bars_graph.print_graph();
 
 
 

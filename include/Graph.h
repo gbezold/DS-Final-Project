@@ -109,13 +109,7 @@ struct Graph{
 		   vertices.push_back( theVertex );
 	  }
 
-	   //NEW METHOD
-		//Same as above, but inserts a value at the front
-		void add_vertex_front( const T& vertexData ){
-			 Vertex<T> theVertex(vertexData);
-			 vertices.insert(vertices.begin(), theVertex);
-
-	   }
+	   
 
 		//NEW METHOD
 		//Return number of vertices
@@ -261,30 +255,6 @@ struct Graph{
 		}
 
 
-	   //NEW METHOD:
-	   //Increment all of the destins by one for when you insert a new first element at index 0 in the graph
-		void update_edge_indices(){
-
-			 for (unsigned int iter = 0; iter < vertices.size(); iter++ ){
-
-				  int jter = 0;
-
-				  while( jter < vertices[iter].num_edges() ){
-					   
-
-						unsigned int old_destin = vertices[iter].get_edge(jter).destin;
-						unsigned int new_destin = old_destin + 1;
-						int weight = 0;
-
-						vertices[iter].remove_edge(old_destin);
-						vertices[iter].add_edge(new_destin, weight);
-
-						jter++;
-
-				   }
-		    }
-
-	 }
 
 	 //NEW METHOD:
 	 //Checks if an edge is unique
@@ -310,7 +280,7 @@ struct Graph{
 
 
 	 //NEW METHOD:
-	 //PRUNE TREE method: prunes all extraneous edges from the graph
+	 //PRUNE TREE method: prunes all additional edges from each vertex if it finds a unique edge at that vertex
 	 void prune_graph(){
 
 		  for (unsigned int iter=0; iter < vertices.size(); iter++ ){
@@ -345,22 +315,7 @@ struct Graph{
 	 }
 
 
-	 //NEW METHOD:
-	 //Find the last digit in the passcode (this will be passed into the sorting method);
-	 unsigned int find_final_digit_index(){
-
-		  for(unsigned int iter = 0; iter < vertices.size(); iter++ ){
-
-				if (vertices[iter].num_edges() == 0){
-
-					 return iter;
-				 }
-
-		  }
-
-		  return 100;
-
-	 }
+	 
 
 
 
