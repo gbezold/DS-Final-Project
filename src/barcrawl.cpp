@@ -35,7 +35,7 @@ void add_bar(Graph<Bar>& bar_graph, Bar& new_bar){
 	 CIN >> price_tier;
 	 
 	 //Edges:
-	 fprintf(stdout, "Please enter a list of edges (ex. 1232415263) where each odd digit is the destination vertex and each subsequent digit is the distance to that vertex (from the example, the first edge goes to vertex 1, and is 2 miles away):\n");
+	 fprintf(stdout, "Please enter a list of comma-separated edges (ex. 1,2,3,2,4,1,5,2,6,3) where each odd digit is the destination vertex and each subsequent digit is the distance to that vertex (from the example, the first edge goes to vertex 1, and is 2 miles away):\n");
 	 CIN >> edges;
 
 
@@ -54,24 +54,43 @@ void add_bar(Graph<Bar>& bar_graph, Bar& new_bar){
 	 unsigned int origin = bar_graph.locate_data(new_bar);
 
 
-	 //Add the edges:
-	 unsigned int i;
-	 unsigned int weight;
-	 unsigned int destin;
 
-	 for(i=0; i < edges.size(); i+=2){
+	 //ADD EDGES:
+	 std::string curr_edge;
+	 unsigned int i, j;
+	
 
-		  //Get the destination
-		  destin = edges[i] - '0';
+	 //6.2 : Parse the individual weights
 
-		  //Get the weight
-		  weight = edges[i+1] - '0';
+	 //Iterate through the list of vertices
+	 for(i=0; i < 1; i++){
+
+		  VECTOR<unsigned int> destins;
+		  VECTOR<unsigned int> weights;
+		  
+		  std::stringstream list(edges);
+		  int iter=0;
+
+		  //PARSE EACH LINE OF INPUT FOR THE WEIGHTS AND DESTINATIONS
+		  while(std::getline(list, curr_edge, ',')){
+
+				if ((iter%2 == 0)) destins.push_back((unsigned int) std::stoi(curr_edge));
+
+				else weights.push_back((unsigned int) std::stoi(curr_edge));
+
+				iter++;
+
+		  }
 
 
-		  //Add edge from origin to destin of weight weight
-		  bar_graph.add_edge(origin, destin, weight);
+		  //INSERT THE EDGES
+		  for(j=0; j < destins.size(); j++){
 
+				bar_graph.add_edge(origin, destins[j], weights[j]);
+		  }
 	 }
+
+
 
 
 }
