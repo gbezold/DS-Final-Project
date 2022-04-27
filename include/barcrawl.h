@@ -67,6 +67,6 @@ typedef struct Bar Bar;
 void add_bar(Graph<Bar>& bar_graph, Bar& new_bar);
 void prune_by_price(Graph<Bar>& bar_graph, unsigned int& price_tier);
 void prune_by_rating(Graph<Bar>& bar_graph, unsigned int& rating);
-
+Graph<Bar> copy_graph(Graph<Bar>& bars_graph);
 
 

@@ -134,6 +134,51 @@ void prune_by_rating(Graph<Bar>& bar_graph, unsigned int& rating){
 
 
 
+//Copy graph function returns a copy of the current graph
+Graph <Bar> copy_graph(Graph<Bar>&bars_graph){
+
+	 //Make copy graph
+	 Graph<Bar> copy_graph;
+
+	 unsigned int iter;
+
+
+
+	 //Read in all of the bar data from the original graph
+	 	 for(iter=0; iter < bars_graph.num_vertices(); iter++){
+
+		  Bar newBar = bars_graph.get_vertex_value(iter);
+		  copy_graph.add_vertex(newBar);
+
+
+	 }
+
+	 //Copy edges
+	 VECTOR< Vertex<Bar> > original_vertices = bars_graph.get_vertices();
+
+	 unsigned int ii, jj;
+
+	 for(ii=0; ii<bars_graph.num_vertices(); ii++){
+
+		  Vertex<Bar> curr_vertex = original_vertices[ii];
+
+		  for(jj=0; jj<original_vertices[ii].num_edges(); jj++){
+
+				Edge copy_edge = bars_graph.vertices[ii].get_edge(jj);
+				int copy_weight = copy_edge.weight;
+				unsigned int copy_destin = copy_edge.destin;
+				copy_graph.add_edge(ii, copy_destin, copy_weight);
+
+		  }
+	 }
+
+	 
+	 //Return the copy
+	 return copy_graph;
+
+}
+
+
 
 
 

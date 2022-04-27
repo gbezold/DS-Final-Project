@@ -21,7 +21,7 @@ struct Graph{
 	
 	private:
 	
-		VECTOR< Vertex< T > > vertices;	// Adjacency List
+		//VECTOR< Vertex< T > > vertices;	// Adjacency List
 		
 		// Private DFS method
 		bool DFS( unsigned int destin, unsigned int vertVal, VECTOR<unsigned int>& parents, VECTOR<bool>& visited ){
@@ -96,6 +96,10 @@ struct Graph{
 		}
 		
 	public:
+
+	 VECTOR< Vertex< T > > vertices;	// Adjacency List
+
+
 		// Constructor
 		Graph( ) : vertices() {}
 		
@@ -117,6 +121,12 @@ struct Graph{
 			 return vertices.size();
 	   }
 
+	   //NEW METHOD
+		//Return vector of vertices
+		VECTOR< Vertex<T> > get_vertices(){
+
+			 return vertices;
+	  }
 
 		
 		// Add Edge from Origin to Destination, with weight
@@ -200,6 +210,9 @@ struct Graph{
 			
 			return false;
 		}
+
+
+	
 		
 		// Set the value at a given origin and destination 
 		// bool for if the origin and destination requested were valid
