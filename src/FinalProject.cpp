@@ -113,51 +113,111 @@ int main(const int argc, const char *argv [] ){
 		  			COUT << "Bars in graph: " << i+1 << ENDL;
 
 				}
+				
+				//6. ADD EDGES:
+				
+				std::string curr_edge;
+				unsigned int i, j;	
+				
+				//6.1 : Read in the strings of edges
+				while(std::getline(edges_input, curr_edge)){
+					edges.push_back(curr_edge);
+				}
 
-
-	 			//6. ADD EDGES:
-	 			std::string curr_edges;
-	 			unsigned int i, j;
-	 			unsigned int destin, weight;
-
-	 			//6.1 : Read in the strings of edges 
-	 			while (edges_input >> curr_edges){
-
-		  			edges.push_back(curr_edges);
-
-	 			}
-		
-	 			//Insert each edge (format: j = destin, j+1 = weight)
-	 
-	 			//Iterate through the list of edges for each vertex
-	 			for (i=0; i < edges.size(); i++){
-
-		  			for(j=0; j < edges[i].size(); j+=2){
-
-						//Get the destination
-						destin = edges[i][j] - '0';
-
-						//Get the weight
-						weight = edges[i][j+1] - '0';
-
-						//Add edge from origin to destin of weight weight
-						bars_graph.add_edge(i, destin, weight);
-
-
-		  			}
-	 			}
-			
+				//6.2 : Parse the individual weights
+		    	//Iterate through the list of vertices
+				for(i=0; i < edges.size(); i++){
+				
+					VECTOR<unsigned int> destins;
+					VECTOR<unsigned int> weights;
+					 	 	 		  	 	 	 	 		  		  		  
+					std::stringstream list(edges[i]);
+					int iter=0;
+				
+					//PARSE EACH LINE OF INPUT FOR THE WEIGHTS AND DESTINATIONS
+					while(std::getline(list, curr_edge, ',')){	
+						if (iter%2 == 0) {
+							destins.push_back((unsigned int) std::stoi(curr_edge));
+						} else {
+							weights.push_back((unsigned int) std::stoi(curr_edge));
+						}
+						
+						iter++;
+					}	 	
+					
+					//INSERT THE EDGES 
+					for(j=0; j < destins.size(); j++){
+			  			bars_graph.add_edge(i, destins[j], weights[j]);
+				 	}
+				}
+				
 				break;
-			}
-		
+			} 	 	 	 	 		  	 	 	 	 		  		  		  		  		  		  		  														  		  		  				
+
+	 					
 			//print graph//
 			case 2: {
 				bars_graph.print_graph();
 				break;
 			}
 
+			case 3: {
+				Bar the_bar;
+				add_bar(bars_graph, the_bar);
+				break;
+			}
+			
+			//optimal bar crawl//
 			case 4: {
-				dijkstras_search(bar_names, bars_graph);	
+				Graph <Bar> graph_copy = copy_graph(bars_graph);
+				generate_crawl(bar_names, graph_copy);
+				break;	
+			}
+
+			case 5: {
+
+				Graph<Bar> graph_copy = copy_graph(bars_graph);
+			
+				int prune_select = 0;
+
+				COUT << "Select 1 to prune by price" << ENDL;
+				COUT << "Select 2 to prune by rating" << ENDL;
+				CIN >> prune_select;
+				
+				if (prune_select == 1) {
+					unsigned int price;
+					COUT << "Enter which price tier bars have to be below (2 ($$) or 3 ($$$))" << ENDL;
+					CIN >> price;
+					if (price != 2 && price != 3) {
+						COUT << "Invalid price tier selection" << ENDL;
+						return -1;
+					}
+					prune_by_price(graph_copy, price);
+				} else if (prune_select == 2) {
+					unsigned int rating;
+					COUT << "Enter which rating tier bars have to be above (1 - 5 stars)" << ENDL;
+					CIN >> rating;
+					if (rating > 5 && rating < 1) {
+						COUT << "Invalid rating tier selection" << ENDL;
+						return -1;
+					}
+					prune_by_price(graph_copy, rating);
+				} else {
+					COUT << "Invalid selection" << ENDL;
+				}
+				
+				COUT << "Updated graph" << ENDL;
+				graph_copy.print_graph();
+
+				//save changes//
+				int save = 0;
+				COUT << "Select 1 to save changes, or 0 to discard changes" << ENDL;
+			    CIN >> save;	
+				if (save == 1) {
+					bars_graph = copy_graph(graph_copy);
+				}
+
+				break;
 			}
 
 		}

@@ -20,9 +20,7 @@ template< typename T >
 struct Graph{
 	
 	private:
-	
-		VECTOR< Vertex< T > > vertices;	// Adjacency List
-		
+			
 		// Private DFS method
 		bool DFS( unsigned int destin, unsigned int vertVal, VECTOR<unsigned int>& parents, VECTOR<bool>& visited ){
 				
@@ -67,35 +65,11 @@ struct Graph{
 				
 		}
 		
-		// Private DFS method
-		void TopSort( unsigned int vertVal, VECTOR<unsigned int>& parents, VECTOR<bool>& visited ){
 				
-			if( !visited[ vertVal ] ){
-				
-				// Set the visited edges to true
-				visited[ vertVal ] = true;
-				
-				// Check each outgoing edge 
-				for( unsigned int iter = 0; iter < vertices[ vertVal ].num_edges(); iter++ ){
-					
-					// Obtain a temporary copy of the Edge
-					Edge tempEdge = vertices[ vertVal ].get_edge( iter );
-					
-					// If the destination has not been visited, make recursive call
-					if( !visited[ tempEdge.destin ] ){
-						
-						// Set the destination's parent to vertVal
-						parents[ tempEdge.destin ] = vertVal;
-						
-						// Otherwise, recursively call the destination vertex
-						TopSort( tempEdge.destin, parents, visited );
-						
-					}
-				}
-			}
-		}
-		
 	public:
+		
+		VECTOR< Vertex< T > > vertices;	// Adjacency List
+
 		// Constructor
 		Graph( ) : vertices() {}
 		
@@ -109,15 +83,35 @@ struct Graph{
 		   vertices.push_back( theVertex );
 	  }
 
-	   //NEW METHOD
-		//Same as above, but inserts a value at the front
-		void add_vertex_front( const T& vertexData ){
-			 Vertex<T> theVertex(vertexData);
-			 vertices.insert(vertices.begin(), theVertex);
+		//NEW METHOD//
+		//Return number of vertices
+		long unsigned int num_vertices() {
+			return vertices.size();
+		}
 
-	   }
+		//Return vector of veritces//
+		VECTOR< Vertex<T> > get_vertices() {
+			return vertices;
+		}
+		
+		//Locate data- return the index for a particular data value
+		unsigned int locate_data(T& data) {
+			
+			unsigned int i;
+			const char* data_name = (data.name).c_str();
 
+			for (i = 0; i < this->vertices.size(); i++) {
+				
+				//convert current name to const char*//
+				const char* curr_name = (this->get_vertex_value(i).name).c_str();
 
+				if(strcmp(data_name, curr_name) == 0) return i;
+
+			}
+
+			return 100;
+		
+		}
 		
 		// Add Edge from Origin to Destination, with weight
 		void add_edge(unsigned int origin, unsigned int destin, int weight ){
@@ -129,7 +123,6 @@ struct Graph{
 		}
 		
 		// Return the value with a Call by Reference
-		
 		T get_vertex_value( const unsigned int vertex){
 							
 				T val = vertices.at(vertex).get_vertex_value();
@@ -138,22 +131,7 @@ struct Graph{
 		}
 
 
-	   //NEW METHOD:
-		//Locate data - return the index for a particular data value
-		unsigned int locate_data( T& data ){
-
-			 unsigned int i;
-
-			 for (i = 0; i < this->vertices.size(); i++){
-
-				 if(data == this->get_vertex_value(i)) return i;
-
-		    }
-
-			 return 100;
-
-	   }
-
+	   
 		//NEW METHOD:
 		//Checks if a particular data value is in the graph
 		bool in_graph( T& value){
@@ -246,31 +224,7 @@ struct Graph{
 		}
 
 
-	   //NEW METHOD:
-	   //Increment all of the destins by one for when you insert a new first element at index 0 in the graph
-		void update_edge_indices(){
-
-			 for (unsigned int iter = 0; iter < vertices.size(); iter++ ){
-
-				  int jter = 0;
-
-				  while( jter < vertices[iter].num_edges() ){
-					   
-
-						unsigned int old_destin = vertices[iter].get_edge(jter).destin;
-						unsigned int new_destin = old_destin + 1;
-						int weight = 0;
-
-						vertices[iter].remove_edge(old_destin);
-						vertices[iter].add_edge(new_destin, weight);
-
-						jter++;
-
-				   }
-		    }
-
-	 }
-
+	   
 	 //NEW METHOD:
 	 //Checks if an edge is unique
 	 bool is_unique_edge( unsigned int& destin ){
@@ -293,59 +247,7 @@ struct Graph{
 
 	 }
 
-
-	 //NEW METHOD:
-	 //PRUNE TREE method: prunes all extraneous edges from the graph
-	 void prune_graph(){
-
-		  for (unsigned int iter=0; iter < vertices.size(); iter++ ){
-
-				for (unsigned int jter=0; jter < vertices[iter].num_edges(); jter++ ){
-
-					 unsigned int vertex_out = vertices[iter].get_edge(jter).destin;
-
-				
-					 //If we find a unique edge at a vertex, delete all other edges so that the search
-					 //forces it to go to the unique destination
-					 if (this->is_unique_edge(vertex_out)){
-
-						  unsigned int kter = vertices[iter].num_edges()+1;
-
-						  while (kter > 0){
-
-						  								
-								vertices[iter].remove_edge(vertices[iter].get_edge(kter-1).destin);
-
-								kter --;
-
-						  }
-						  
-						  int weight = 0;
-						  vertices[iter].add_edge(vertex_out, weight);
-
-					 }
-
-				}
-		  }
-	 }
-
-
-	 //NEW METHOD:
-	 //Find the last digit in the passcode (this will be passed into the sorting method);
-	 unsigned int find_final_digit_index(){
-
-		  for(unsigned int iter = 0; iter < vertices.size(); iter++ ){
-
-				if (vertices[iter].num_edges() == 0){
-
-					 return iter;
-				 }
-
-		  }
-
-		  return 100;
-
-	 }
+	 
 
 	 //GRACE NEW METHOD//
 	 //Prune edges based on distance//
@@ -355,553 +257,39 @@ struct Graph{
 
 		int curr_index = start;
 		
-		VECTOR<int> the_bars;
-		the_bars.push_back(curr_index);
-
+		VECTOR<int> the_bars(1, start);
+		
 	 	//loop until have bars == num_bars//
 	 	while (the_bars.size() < num_bars) {
 				
 	 		//look for edge with shortest distance from curr_index//
 			int new_index = vertices[curr_index].min_weight();
-			
-			//take that minimum weight and add to the_bars//
+		
+			if (curr_index == start) {
+				for (unsigned int i = 0; i < vertices.size(); i++) {
+					vertices[i].remove_edge(curr_index);
+				}
+			}
+		
+			//take that minimum weight bar and add to the_bars//
 			the_bars.push_back(new_index);
+			//remove edges pointing back to bar we've already visited//
+			for (unsigned int i = 0; i < vertices.size(); i++) {
+				//if not new_index, remove all edges to curr_index//
+				if (i != curr_index) {
+					vertices[i].remove_edge(new_index);
+				}
+			}
 			curr_index = new_index;
 
 		}
 		
-		//remove extraneous edges, ie those not pointing to next closest bar//
-		for (unsigned int i = 0; i < the_bars.size() - 1; i++) {
-			
-			vertices[the_bars[i]].remove_extra_edges(the_bars[i + 1]);
-
-		}
-
 		end = the_bars[the_bars.size() - 1];
 		
 		return end;
 	 }
-	
-	
-		// Public DFS Method
-		void DFS( unsigned int destin ){
 			
-			// If the input is invalid or the Graph is empty
-			if( destin >= vertices.size() || vertices.size() == 0){
-				
-				std::cout << "Invalid inputs to DFS" << std::endl;
-				
-				return;
-			}
-			
-			/* Initialize the Values for the DFS */
-			
-			// Track the parents for printing the results
-			VECTOR<unsigned int> parents(vertices.size());
-			
-			// Keep track of the visited vertices
-			VECTOR<bool> visited(vertices.size());
-			
-			// Create a stack to store the final path
-			STACK< unsigned int > finalPath;
-			bool found = false;
-
-			// Initialize the search	
-			parents[0] = -1;
-			
-			// Set all the visited elements to false
-			for( unsigned int iter = 0; iter < vertices.size(); iter++ ){
-				visited[iter] = false;
-			}
-			
-			// If the destination is the origin, mark found as true
-			if( destin == 0 ){
-				
-				found = true;
-				
-			}
-			
-			// Otherwise, run the recursive DFS 
-			else{
-
-				found = DFS( destin, 0, parents, visited );
-			
-			}
-			
-			// If we have not found the node, there is no path
-			if( !found ){
-				
-				std::cout << "No valid path from 0 to " << destin << std::endl;
-				return;
-			}
-			
-			// Otherwise, go through the parents until we find the origin
-			unsigned int sentinel = destin;	
-			finalPath.push( sentinel );		// Push the desination onto the stack
-			
-			while( parents[sentinel] != -1 ){
-				
-				finalPath.push( parents[sentinel] );	// Push the parent onto the stack
-				sentinel = parents[sentinel];			// Update the sentinel
-				
-			}
-			
-			// Stack contains the correct order 
-			std::cout << "The valid DFS path from 0 to " << destin << " is: ";
-			while( !finalPath.empty() ){
-				
-				std::cout << finalPath.top() << " ";
-				finalPath.pop();
-			}
-			
-			std::cout << std::endl;
-				
-			
-		}
-		
-		
-		// Public DFS Method
-		void DFS( unsigned int origin, unsigned int destin ){
-			
-			// If the input is invalid or the Graph is empty
-			if( origin >= vertices.size() || destin >= vertices.size() || vertices.size() == 0){
-				
-				std::cout << "Invalid inputs to DFS" << std::endl;
-				
-				return;
-			}
-			
-			/* Initialize the Values for the DFS */
-			
-			// Track the parents for printing the results
-			VECTOR<unsigned int> parents(vertices.size());
-			
-			// Keep track of the visited vertices
-			VECTOR<bool> visited(vertices.size());
-			
-			// Create a stack to store the final path
-			STACK< unsigned int > finalPath;
-			bool found = false;
-
-			// Initialize the search	
-			parents[ origin ] = -1;
-			
-			// Set all the visited elements to false
-			for( unsigned int iter = 0; iter < vertices.size(); iter++ ){
-				visited[iter] = false;
-			}
-			
-			// If the destination is the origin, mark found as true
-			if( destin == origin ){
-				
-				found = true;
-				
-			}
-			
-			// Otherwise, run the recursive DFS 
-			else{
-
-				found = DFS( destin, origin, parents, visited );
-			
-			}
-			
-			// If we have not found the node, there is no path
-			if( !found ){
-				
-				std::cout << "No valid path from " << origin << " to " << destin << std::endl;
-				return;
-			}
-			
-			// Otherwise, go through the parents until we find the origin
-			unsigned int sentinel = destin;	
-			finalPath.push( sentinel );		// Push the desination onto the stack
-			
-			while( parents[sentinel] != -1 ){
-				
-				finalPath.push( parents[sentinel] );	// Push the parent onto the stack
-				sentinel = parents[sentinel];			// Update the sentinel
-				
-			}
-			
-			// Stack contains the correct order 
-			std::cout << "The valid DFS path from " << origin << " to " << destin << " is: ";
-			while( !finalPath.empty() ){
-				
-				std::cout << finalPath.top() << " ";
-				finalPath.pop();
-			}
-			std::cout << std::endl;
-				
-			
-		}
-		
-		void BFS( unsigned int destin ){
-			
-			// If Graph can't be search, inform user and return 
-			// destin cannot be greater than the number of vertices
-			// The number of vertices must not be 0
-			if( destin >= vertices.size() || vertices.size() == 0){
-				
-				std::cout << destin << " is not a valid vertex location" << std::endl;
-				
-				return;
-			}
-			
-			/* Create elements for the search */
-			
-			// queue to store the next vertex to evaluate
-			QUEUE< unsigned int > theQueue;
-			
-			// Keeping track if the vertex has been visited. Set all initially to false
-			bool* visited = new bool[vertices.size()];
-			for( unsigned int iter = 0; iter < vertices.size(); iter++ ){
-				
-				visited[iter] = false;
-			}
-			
-			// Keeping track of the parents 
-			unsigned int* parents = new unsigned int[vertices.size()];
-			
-			// Use this stack for the final path
-			STACK< unsigned int > finalPath;
-			
-			/* Initialize the search */
-			bool found = false; 
-			
-			// Push the origin onto the Queue
-			theQueue.push(0);
-			
-			// The origin has no parent, and the origin has been visited
-			parents[0] = -1;
-			
-			// Set found to true if the origin is the destination
-			if( destin == 0 ){
-				found = true;
-			}
-			
-			// While the element is not found and the queue is not empty
-			while( !found && !theQueue.empty() ){
-				
-				// First step in BFS is to obtain and remove the front element from the queue 
-				unsigned int vertex = theQueue.front();
-				theQueue.pop();
-				
-				// Mark the vertex as visited
-				visited[ vertex ] = true;
-				
-				// Iterate through each edge 
-				for( unsigned int iter = 0; iter < vertices[ vertex ].num_edges(); iter++){
-					
-					// Get the destination from the edge
-					unsigned int edgeDestin = vertices[ vertex ].get_edge( iter ).destin;
-					
-					// If the edge's destination matches our destination, we found the node
-					if( edgeDestin == destin ){
-						
-						found = true;
-						
-						// Mark the destination's parent as vertex 
-						parents[ edgeDestin ] = vertex;
-						
-						break;
-					}
-					
-					// If the destination has not been visited
-					else if( visited[ edgeDestin ] == false ) {
-						
-						// Push the destination onto the queue
-						theQueue.push( edgeDestin );
-						
-						// Mark edgeDestin's parent as vertex
-						parents[ edgeDestin ] = vertex;
-						
-						// Mark visited as true
-						visited[ edgeDestin ] = true;
-
-					}
-				}
-
-			}
-			
-			// If we have not found the node, there is no path
-			if( !found ){
-				
-				std::cout << "No valid path from origin to " << destin << std::endl;
-				return;
-			}
-			
-			// Otherwise, go through the parents until we find the origin
-			unsigned int sentinel = destin;	
-			finalPath.push( sentinel );		// Push the desination onto the stack
-			
-			while( parents[sentinel] != -1 ){
-				
-				finalPath.push( parents[sentinel] );	// Push the parent onto the stack
-				
-				sentinel = parents[sentinel];			// Update the sentinel
-				
-			}
-			
-			// Stack contains the correct order 
-			// CHANGED: formatted output to print the digits of the passcode instead of the vertices!
-			std::cout << "The valid passcode is: ";
-			while( !finalPath.empty() ){
-				
-				std::cout << this->vertices[finalPath.top()].get_vertex_value();
-				finalPath.pop();
-			}
-			std::cout << std::endl;
-		}
-
-		// BFS with an origin and destination node
-		void BFS( unsigned int origin, unsigned int destin ){
-			
-			// If Graph can't be search, inform user and return 
-			// origin destin cannot be >= than the number of vertices
-			// The number of vertices must not be 0
-			if( origin >= vertices.size() || destin >= vertices.size() || vertices.size() == 0){
-				
-				std::cout << "Invalid BFS inputs" << std::endl;
-				
-				return;
-			}
-			
-			/* Create elements for the search */
-			
-			// queue to store the next vertex to evaluate
-			QUEUE< unsigned int > theQueue;
-			
-			// Keeping track if the vertex has been visited. Set all initially to false
-			bool* visited = new bool[vertices.size()];
-			for( unsigned int iter = 0; iter < vertices.size(); iter++ ){
-				
-				visited[iter] = false;
-			}
-			
-			// Keeping track of the parents 
-			unsigned int* parents = new unsigned int[vertices.size()];
-			
-			/* Initialize the search */
-			bool found = false; 
-			
-			// Push the origin onto the Queue
-			theQueue.push( origin );
-			
-			// The origin has no parent, and the origin has been visited
-			parents[ origin ] = -1;
-			
-			// Set found to true if the origin is the destination
-			if( destin == origin ){
-				found = true;
-			}
-			
-			// While the element is not found and the queue is not empty
-			while( !found && !theQueue.empty() ){
-				
-				// First step in BFS is to obtain and remove the front element from the queue 
-				unsigned int vertex = theQueue.front();
-				theQueue.pop();
-				
-				// Mark the vertex as visited
-				visited[ vertex ] = true;
-				
-				// Iterate through each edge 
-				for( unsigned int iter = 0; iter < vertices[ vertex ].num_edges(); iter++){
-					
-					// Get the destination from the edge
-					unsigned int edgeDestin = vertices[ vertex ].get_edge( iter ).destin;
-					
-					// If the edge's destination matches our destination, we found the node
-					if( edgeDestin == destin ){
-						
-						found = true;
-						
-						// Mark the destination's parent as vertex 
-						parents[ edgeDestin ] = vertex;
-						
-						break;
-					}
-					
-					// If the destination has not been visited
-					if( visited[ edgeDestin ] == false ) {
-						
-						// Push the destination onto the queue
-						// std::cout << "pushing " << edgeDestin << std::endl;
-						theQueue.push( edgeDestin );
-						// Mark edgeDestin's parent as vertex
-						parents[ edgeDestin ] = vertex;
-						
-						visited[ edgeDestin ] = true;
-					}
-				}
-
-			}
-			
-			// If we have not found the node, there is no path
-			if( !found ){
-				
-				std::cout << "No valid path from " << origin << " to " << destin << std::endl;
-				return;
-			}
-			
-			// Otherwise, go through the parents until we find the origin
-			STACK< unsigned int > finalPath;
-			unsigned int sentinel = destin;	
-			finalPath.push( sentinel );		// Push the desination onto the stack
-			
-			while( parents[sentinel] != -1 ){
-				
-				finalPath.push( parents[sentinel] );	// Push the parent onto the stack
-				
-				sentinel = parents[sentinel];			// Update the sentinel
-				
-			}
-			
-			// Stack contains the correct order 
-			std::cout << "The valid BFS path from " << origin << " to " << destin << " is: ";
-			while( !finalPath.empty() ){
-				
-				std::cout << finalPath.top() << " ";
-				finalPath.pop();
-			}
-			std::cout << std::endl;
-		}
-		
-		
-		// Method for Topological Sort
-		Graph<T> TopSort( ){
-			
-			/* Initialize the Values for the Topological Sort */
-			
-			/* Initialize the return Graph */
-			Graph<T> TopSortGraph;
-			
-			for( unsigned int iter = 0; iter < vertices.size(); iter++ ){
-				
-				// Add the value of each vertex to the TopSort graph
-				TopSortGraph.add_vertex( vertices[ iter ].get_vertex_value() );
-				
-			}
-			
-			// Track the parents for printing the results
-			VECTOR<unsigned int> parents(vertices.size());
-			
-			// Keep track of the visited vertices
-			VECTOR<bool> visited(vertices.size());
-			
-			// Create a stack to store the final path
-			STACK< unsigned int > finalPath;
-			
-			// Set all the visited elements to false
-			for( unsigned int iter = 0; iter < vertices.size(); iter++ ){
-				visited[iter] = false;
-				parents[iter] = -1;
-			}
-			
-			// Run the Topological Sort - We must check every element 
-			for(unsigned int iter = 0; iter < vertices.size(); iter++ ){
-				TopSort( iter, parents, visited );
-			}
-			
-			// Add all the edges from the parent to the Graph 
-			for( unsigned int iter = 1; iter < vertices.size(); iter++ ){
-				
-				// Get the edge weight 
-				int edgeWeight = 0;
-				get_edge_value( parents[iter], iter, edgeWeight );
-				
-				// Add the Edge
-				TopSortGraph.add_edge(parents[iter], iter, edgeWeight );
-			}
-			
-			return TopSortGraph;
-		}
-		
-		
-		// Return the Minimum Spanning Tree
-		Graph<T> MST(){
-			
-			Graph<T> MSTGraph;
-			
-			// Set up the priority queue for the algorithm
-			PRIORITY_QUEUE< MSTElem > MST_PQ;
-			
-			// Use a Hash Table for the Frontier
-			UNOR_MAP< unsigned int, bool > frontier;
-			
-			// Track the parents of the vertex
-			unsigned int* parents = new unsigned int[ vertices.size() ];
-			
-			// Track the weights of the edges 
-			int* weights = new int[ vertices.size() ];
-			
-			// Initialize the origin and push onto the Priority Queue 
-			MSTElem origin( 0, 0 );
-			MST_PQ.push( origin );
-			
-			// Set the origin on the frontier to true
-			frontier.insert( {0, true} );
-			
-			// Set the parent's origin to -1 and weight to largest negative value
-			parents[0] = -1;
-			weights[0] = -2147483648;
-			
-			for( unsigned int i = 1; i < vertices.size(); i++ ){
-				
-				MSTElem temp( i, 2147483647 );
-				weights[i] = 2147483647;
-				MST_PQ.push( temp );
-				frontier.insert( {i, true} );
-			}
-			
-			while( !MST_PQ.empty() ){
-				
-				// Obtain the first element
-				MSTElem currElem = MST_PQ.top();
-				
-				// Remove the first element
-				MST_PQ.pop();
-				
-				// Set the current node in the frontier to false
-				frontier[ currElem.index ] = false;
-				
-				// Go through all the outgoing edges of the vertex
-				for( unsigned int i = 0; i < vertices[ currElem.index ].num_edges(); i++ ){
-					
-					// Get the current edge from MST current element's vertex
-					Edge currEdge = vertices[ currElem.index ].get_edge( i );
-					
-					if( currEdge.weight < weights[ currEdge.destin ] && frontier[ currEdge.destin ] ){
-						
-						weights[ currEdge.destin ] = currEdge.weight;
-						parents[ currEdge.destin ] = currElem.index;
-						
-						MSTElem pushElem( currEdge.destin, currEdge.weight);
-						MST_PQ.push( pushElem );
-						
-					}
-				}
-			}
-			
-			for( unsigned int i = 0; i < vertices.size(); i++){
-				
-				MSTGraph.add_vertex( vertices[i].get_vertex_value() );
-			}
-			
-			for( unsigned int i = 0; i < vertices.size(); i++){
-				
-				if( parents[i] != -1 ){
-					
-					MSTGraph.add_edge( parents[i], i, weights[i] );
-					
-				}
-			}
-			
-			return MSTGraph;
-			
-		}
-		
-		
+		//UPDATED METHOD- Grace//	
 		// Dijkstra's Algorithm
 		void Dijkstra( unsigned int origin, unsigned int destin ){
 			
@@ -980,13 +368,15 @@ struct Graph{
 				}
 				
 				// Stack contains the correct order 
-				std::cout << "The valid Dijkstra path from 0 to " << destin << " is: ";
+				std::cout << "The optimal barcrawl path from " << vertices[origin].get_name() <<  " is: ";
 				while( !finalPath.empty() ){
 					
-					std::cout << finalPath.top() << " ";
+					//find name of vertex to print name rather than number//	
+
+					COUT << vertices[finalPath.top()].get_name() << ", ";
 					finalPath.pop();
 				}
-				std::cout << ", and the distance is " << distance[destin] << std::endl;
+				std::cout << "and the distance is " << distance[destin] << " miles" << std::endl;
 				std::cout << std::endl;		
 			}
 			

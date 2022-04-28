@@ -13,6 +13,7 @@
 #include<cstdlib>
 #include<vector>
 #include<string.h>
+#include<sstream>
 
 //.h files provided by Dr. Morrison in PC07
 #include "../include/Edge.h"
@@ -62,5 +63,8 @@ struct Bar{
 typedef struct Bar Bar;
 
 //function declarations//
-void dijkstras_search(VECTOR<std::string> bar_names, Graph<Bar> &bars_graph);
-
+void generate_crawl(VECTOR<std::string> bar_names, Graph<Bar> &bars_graph);
+void add_bar(Graph<Bar> &bar_graph, Bar& new_bar);
+void prune_by_price(Graph<Bar> &bar_graph, unsigned int& price_tier);
+void prune_by_rating(Graph<Bar> &bar_graph, unsigned int& rating);
+Graph<Bar> copy_graph(Graph<Bar> &bars_graph);

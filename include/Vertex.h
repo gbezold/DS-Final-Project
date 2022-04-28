@@ -27,7 +27,16 @@ class Vertex{
 		
 		~Vertex(){ }
 		
-		
+		bool get_valid(){
+
+			return valid;
+		}
+	
+		void set_valid(bool val){
+
+			this->valid = val;
+		}
+
 		T get_vertex_value() const{
 			
 			return data;
@@ -162,19 +171,14 @@ class Vertex{
 				}
 			}
 		
-			return index;
+			return edges[index].destin;
 		}
 
-		//NEW METHOD//
-		//remove extra edges//
-		void remove_extra_edges(unsigned int dest) {
-	
-			for (unsigned int i = 0; i < edges.size(); i++) {
-				
-				if (edges[i].destin != dest) edges.erase(edges.begin() + i);
-			
-			}
+		//NEW METHOD- GRACE//
+		std::string get_name() {
 
+			return this->data.name;
+		
 		}
 
 		
