@@ -13,6 +13,7 @@
 
 int main(const int argc, const char *argv [] ){
 
+
 	//check for proper number of command line arguments (there should be two, the executable and the input file):
 	if (argc < 2){
 		COUT << "Error: improper number of command line arguments." << ENDL;
