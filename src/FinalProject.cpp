@@ -142,7 +142,8 @@ int main(const int argc, const char *argv [] ){
 						} else {
 							weights.push_back((unsigned int) std::stoi(curr_edge));
 						}
-						
+					
+
 						iter++;
 					}	 	
 					

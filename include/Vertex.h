@@ -31,6 +31,7 @@ class Vertex{
 
 			return valid;
 		}
+
 	
 		void set_valid(bool val){
 

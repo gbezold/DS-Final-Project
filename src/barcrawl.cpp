@@ -30,7 +30,8 @@ void generate_crawl(VECTOR<std::string> bar_names, Graph<Bar> &bars_graph) {
 	
 	//convert name_start to an int//
 	int start = -1;
-	
+
+
 	//set up to convert std::string to char * for strcmp//
 
 	for (unsigned int i = 0; i < bar_names.size(); i++) {

@@ -18,6 +18,7 @@ struct Edge{
 		return destin == rhs.destin && weight == rhs.weight;
 		
 	}
+
 };
 
 #endif
